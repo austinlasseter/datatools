@@ -1,0 +1,37 @@
+Suite of programs designed to call the census ACS api,
+extract a set of variable values, and them dump them into a local
+sql database.
+Peter Viechnicki, 17 July 2014.
+
+Steps in pipeline: 
+
+1. call_census_api.pl: pull down the Census data by year, county, state.
+
+usage = "call_census_api.pl -a [acs1|acs3|acs5] -y [ACS_YEAR] -v [ACS CONCEPT NAME] -c [FIPS_COUNTY] -s [FIPS_STATE] -g [COUNTY|TRACT] -k keyfile -h SHOW_HELP";
+
+Outputs: writes a datafile (simple JSON format) and dictionary file with variable names.
+
+Dependencies: Fips.pm contains FIPS state and county codes
+	      cenvarParse.pm contains code to parse the xml data dictionary file
+	      census_api_key.txt contains the uniqe key for the census api
+	      acs_1yr_2012var.xml contains the variable names and descriptions
+	      (I couldn't get the xml parser to work on the remote xml url
+	      so I had to download a local copy)
+
+The concept names are equivalent to the American Community Survey table names.  For example, B08301 is the concept name for 'Means of Transportation to Work.'  Use factfinder.census.gov to find your table name.
+
+2. make_sql_table_shell.pl: Read the dict file from step 1 and create a 
+set of SQL statements to make a table shell to hold the data.
+options -t TABLE_NAME
+Dependencies: None
+
+3. make_sql_insert.pl: Read the JSON file from step 1 and write out 
+SQL insert statements to 
+load data into the table shell created in 2.
+options -t TABLE_NAME
+Dependencies: None
+
+
+
+
+
